@@ -1,0 +1,11 @@
+{% extends 'applitravel/base.html' %}
+{% load static %}
+{% block title %}Déconnexion{% endblock %}
+{% block main %}
+<div class="div-logout">
+    <h2>Merci de votre visite</h2>
+    <h2>Nous espérons vous revoir bientôt</h2>
+    <img class="imageVoyage" src="{% static 'applitravel/img/icone_travel.png' %}" alt="imageVoyage">
+    <a href="/login/">Connexion</a>
+</div>
+{% endblock %}

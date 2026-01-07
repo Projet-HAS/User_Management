@@ -1,0 +1,129 @@
+from django.shortcuts import render,redirect
+
+from django.utils import timezone
+from django.core.exceptions import PermissionDenied
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import authenticate
+from SKT_account.models import Entreprise, Compte
+
+from django.contrib.auth.models import Group
+
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
+from .forms import UserCreateForm
+
+# Create your views here.
+
+@staff_member_required
+def create_user_view(request):
+    """
+    Vue protégée : seuls les membres du staff peuvent créer un utilisateur.
+    """
+    if request.method == "POST":
+        form = UserCreateForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, f"Utilisateur créé : {user.email}")
+            # Récupérer le groupe "Administrator"
+            admin_group = Group.objects.get(name="Administrator")
+
+            # Liste des utilisateurs dans ce groupe
+            users_in_admin_group = admin_group.user_set.all()
+            return render(request, "users_manage.html", {'users': users_in_admin_group})  
+    else:
+        form = UserCreateForm()
+
+    return render(request, "create_user.html", {"form": form})
+
+
+def connectionHandler(request) :
+
+    #récupération de l'utilisateur connecté
+    email = request.POST.get('username')
+    pwd = request.POST.get('password')
+    user = authenticate(request, username = email, password = pwd) 
+
+    #vérification de l'authenification
+    if not user :
+        raise PermissionDenied(_("Utilisateur non authentifié."))
+
+    #si c'est un SuperAdministrateur
+    if user.is_authenticated and user.is_staff and user.is_active :
+            
+            # Récupérer le groupe "Administrator"
+            admin_group = Group.objects.get(name="Administrator")
+
+            # Liste des utilisateurs dans ce groupe
+            users_in_admin_group = admin_group.user_set.all()
+           
+            return render(
+                request,
+                'users_manage.html',
+                {'users': users_in_admin_group}
+            )        
+            
+
+   #si c'est un Administrateur
+    if user.is_authenticated and user.groups.first().name=="Administrator" and user.is_active :
+            
+            # Liste des entreprises
+            entreprises = Entreprise.objects.all()
+           
+            return render(
+                request,
+                'entreprises_manage.html',
+                {'entreprises': entreprises}
+            )
+ 
+    # récupération de l'entreprise
+    compte = Compte.objects.filter(id = user.id).first()
+    if compte :
+        entreprise = compte.Compte_IDEntreprise
+    else :
+        raise PermissionDenied(_("Utilisateur non affecté à une entreprise"))
+    
+    # Comparaison avec la date du jour (UTC par défaut, convertie en date)
+    today = timezone.now().date()
+
+    # vérification de la définition d'une date de début de licence
+    if not entreprise or entreprise.Entreprise_Licence_Date_Start is None:
+        raise PermissionDenied(_("Aucune date de licence définie pour l'entreprise."))
+
+    # vérification de la validité de la licence
+    licence = False
+    # La licence est active
+    if entreprise.Entreprise_Licence_Statut == 'ACT' :
+        #La période de licence a démarré
+        if entreprise.Entreprise_Licence_Date_Start <= today :
+            #La période de licence n'est pas finie
+            if entreprise.Entreprise_Licence_Date_End is None or entreprise.Entreprise_Licence_Date_End > today :
+                licence = True
+
+    if not licence :
+        raise PermissionDenied(_("La licence est invalide"))
+
+    #traitement en fonction du groupe de l'utilisateur
+    match user.groups.first().name:
+        case "Administrator":
+            print("Administrator")
+            return render(
+                request,
+                'users_manage.html',
+            )
+        case "SKT_User":
+            print("Utilisateur")
+        case "Customer":
+            print("Client")
+        case "Supervisor":
+            print("Supervisor")
+        case _:
+            raise PermissionDenied(_("Le rôle de l'utilisateur n'est pas défini"))
+
+    return render(
+        request,
+        'base.html',
+    )
+
+
+ 

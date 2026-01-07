@@ -1,0 +1,67 @@
+
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Créer un nouvel utilisateur</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <h1>Créer un nouvel utilisateur</h1>
+
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    
+<div>
+  <label for="id_first_name">Prénom</label>
+  {{ form.first_name }}
+  {% if form.first_name.errors %}
+    <div class="error">{{ form.first_name.errors }}</div>
+  {% endif %}
+</div>
+
+<div>
+  <label for="id_last_name">Nom</label>
+  {{ form.last_name }}
+  {% if form.last_name.errors %}
+    <div class="error">{{ form.last_name.errors }}</div>
+  {% endif %}
+</div>
+
+    <div>
+      <label for="id_email">Email</label>
+      {{ form.email }}
+      {% if form.email.errors %}
+        <div class="error">{{ form.email.errors }}</div>
+      {% endif %}
+    </div>
+
+    <div>
+      <label for="id_password1">Mot de passe</label>
+      {{ form.password1 }}
+      {% if form.password1.errors %}
+        <div class="error">{{ form.password1.errors }}</div>
+      {% endif %}
+    </div>
+
+    <div>
+      <label for="id_password2">Confirmation du mot de passe</label>
+      {{ form.password2 }}
+      {% if form.password2.errors %}
+        <div class="error">{{ form.password2.errors }}</div>
+      {% endif %}
+    </div>
+
+    <button type="submit">Créer l’utilisateur</button>
+  </form>
+</body>
+</html>

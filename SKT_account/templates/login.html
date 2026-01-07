@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Screen</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      background: linear-gradient(to bottom right, #e0f2fe, #f0f9ff, #bae6fd);
+      overflow: hidden;
+    }
+
+    .login-container {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      items-center: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-form {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      space-y: 1.5rem;
+    }
+
+    .login-form h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #1f2937;
+      margin-bottom: 1.5rem;
+    }
+
+    .login-form input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .login-form input:focus {
+      outline: none;
+      border-color: #6b7280;
+    }
+
+    .login-form button {
+      width: 100%;
+      background: #374151;
+      color: white;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .login-form button:hover {
+      background: #1f2937;
+    }
+
+    .error-message {
+      color: #ef4444;
+      text-align: center;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    .character {
+      position: absolute;
+      opacity: 0.5;
+      pointer-events: none;
+      user-select: none;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Characters -->
+  <img src="{% static 'images\Viktor_compressed.webp' %}" alt="" class="character" style="
+    top: 15%;
+    left: 20%;
+    width: 250px;
+    transform: translate(-50%, -50%) rotate(-6deg) scale(1.1);
+    filter: blur(14px);
+  ">
+
+  <img src="{% static 'images\Chloe_compressed.webp' %}" alt="" class="character" style="
+    top: 20%;
+    left: 80%;
+    width: 250px;
+    transform: translate(-50%, -50%) rotate(8deg) scale(1.05);
+    filter: blur(16px);
+  ">
+
+  <img src="{% static 'images\Jerome_compressed.webp' %}" alt="" class="character" style="
+    top: 75%;
+    left: 15%;
+    width: 250px;
+    transform: translate(-50%, -50%) rotate(5deg) scale(1.15);
+    filter: blur(18px);
+  ">
+
+  <img src="{% static 'images\Alice_compressed.webp' %}" alt="" class="character" style="
+    top: 70%;
+    left: 78%;
+    width: 250px;
+    transform: translate(-50%, -50%) rotate(-4deg) scale(1.1);
+    filter: blur(12px);
+  ">
+
+  <!-- Login Form -->
+  <div class="login-container">
+    <form id="loginForm" class="login-form" method="post" action="/connection/">
+      {% csrf_token %}
+      <h1>Login</h1>
+
+      <input
+        type="email"
+        placeholder="Email"
+        id="username"
+        name="username"
+        required
+      >
+
+      <input
+        type="password"
+        placeholder="Password"
+        id="id_password"
+        name="password"
+        required
+      >
+
+      <p id="error" class="error-message" style="display: none;"></p>
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+</html>
