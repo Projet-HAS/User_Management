@@ -265,41 +265,7 @@ class Entreprise(models.Model) :
                 "Entreprise_Num_Group_Create": _("La valeur ne peut pas dépasser %(max)s.") % {"max": max_allowed}
             }) 
         
-    class Meta:
-        # Contrainte SQL ajoutées à la BDD : robustesse même pour les écritures hors Django
-        
-      constraints = [
 
-            # contraintes pour Entreprise_Num_Customer_Allow
-            models.CheckConstraint(
-                check=Q(Entreprise_Num_Customer_Allow__gte=0) & Q(Entreprise_Num_Customer_Allow__lte=999),
-                name="chk_allow_between_0_and_999",
-            ),
-
-            # contraintes pour Entreprise_Num_Customer_Create
-            models.CheckConstraint(
-                check=Q(Entreprise_Num_Customer_Create__gte=0) & Q(Entreprise_Num_Customer_Create__lte=F("Entreprise_Num_Customer_Allow")),
-                name="chk_customer_create_lte_allow",
-            ),
-
-            # contraintes pour Entreprise_Num_User_Create
-            models.CheckConstraint(
-                check=Q(Entreprise_Num_User_Create__gte=0) & Q(Entreprise_Num_User_Create__lte=F("Entreprise_Num_User_Allow")),
-                name="chk_user_create_lte_allow",
-            ),
-
-            # contraintes pour Entreprise_Num_Supervisor_Create
-            models.CheckConstraint(
-                check=Q(Entreprise_Num_Supervisor_Create__gte=0) & Q(Entreprise_Num_Supervisor_Create__lte=F("Entreprise_Num_Supervisor_Allow")),
-                name="chk_supervisor_create_lte_allow",
-            ),
-
-            # contraintes pour Entreprise_Num_Group_Create
-            models.CheckConstraint(
-                check=Q(Entreprise_Num_Group_Create__gte=0) & Q(Entreprise_Num_Group_Create__lte=F("Entreprise_Num_Group_Allow")),
-                name="chk_group_create_lte_allow",
-            ),
-        ]
 
 ##############################
 # Surcharge de la table User #
