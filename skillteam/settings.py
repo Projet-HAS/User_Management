@@ -25,8 +25,14 @@ SECRET_KEY = 'django-insecure--!adrdwy*(e4dzh6i$n8t%9oq_-(kf1i7(tu0ad-x6g7d#^+8f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['51.210.77.210']
+ALLOWED_HOSTS = ['51.210.77.210', 'skillteam.net', 'www.skillteam.fr']
 
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://skillteam.net',
+    'https://www.skillteam.net'
+    'https://51.210.77.210'
+]
 
 # Application definition
 
